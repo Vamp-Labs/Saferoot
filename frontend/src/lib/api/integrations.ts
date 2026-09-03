@@ -4,7 +4,7 @@ import { fixtureIntegration } from "./fixtures";
 
 export async function fetchIntegrations(): Promise<WithSource<Integration[]>> {
   return withFixtureFallback(
-    () => apiFetch<Integration[]>("/integrations"),
+    () => apiFetch<{ integrations: Integration[] }>("/integrations").then((response) => response.integrations),
     () => [fixtureIntegration],
   );
 }

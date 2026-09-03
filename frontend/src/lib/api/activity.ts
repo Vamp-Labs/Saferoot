@@ -5,7 +5,7 @@ import { fixtureActivity } from "./fixtures";
 export async function fetchActivity(policyId?: string): Promise<WithSource<ActivityEvent[]>> {
   const query = policyId ? `?policyId=${encodeURIComponent(policyId)}` : "";
   return withFixtureFallback(
-    () => apiFetch<ActivityEvent[]>(`/activity${query}`),
+    () => apiFetch<{ activity: ActivityEvent[] }>(`/activity${query}`).then((response) => response.activity),
     () => (policyId ? fixtureActivity.filter((event) => event.policyId === policyId) : fixtureActivity),
   );
 }
