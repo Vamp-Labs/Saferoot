@@ -1,0 +1,16 @@
+{
+  "ethereumSepolia": {
+    "chainId": 11155111,
+    "policyRegistry": "0xEE1920869bfCB8b24C1b5AAE45927E7ad12f07F0",
+    "authoritySafe": "0xf4b6a941B0bB4699cba45970cBf7c476ccE49dDd"
+  },
+  "creditcoinCc3": {
+    "chainId": 102031,
+    "rpcUrl": "https://rpc.cc3-testnet.creditcoin.network",
+    "safeRootPolicyExecutor": "0x57dE3c48b747A812fD643900568EA9FbCE6dF7cB",
+    "attestcoinVerifierAdapter": "0x8964F00624b3aAF3f74d51db2016571dC398374d",
+    "mockUsdc": "0x3773a72021e0f923f58cA02643f0D22936a30303",
+    "lendingPoolMock": "0x80298359FAd5b1ee10f2fd60422E53F55e2e8D45",
+    "guardian": "0x69a6e8CB7e0AC17831439fe724AD262c358821e5"
+  }
+}

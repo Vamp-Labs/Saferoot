@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Tribe Capital</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="fonts">
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .serif-font {
+      font-family: 'Playfair+Display', serif;
+    }
+  </style>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'tribe-blue': '#2E35FF',
+            'tribe-gray': '#F5F5F5',
+            'text-primary': '#1A1A1A',
+            'text-secondary': '#666666'
+          }
+        }
+      }
+    }
+  </script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Inter:wght@400;500;600&amp;display=swap" data-snapdom="injected-import"></head>
+<body class="bg-white text-text-primary antialiased flex flex-col min-h-screen">
+<!-- BEGIN: Header -->
+<header class="border-b border-gray-200">
+<div class="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between h-24">
+<!-- Logo -->
+<a class="serif-font font-bold text-xl tracking-tight uppercase" href="#">
+        Tribe Capital
+      </a>
+<!-- Navigation -->
+<nav class="hidden md:flex items-center space-x-8 text-xs font-semibold tracking-wider">
+<a class="text-tribe-blue hover:text-tribe-blue/80 transition-colors uppercase" href="#">Venture</a>
+<a class="text-text-primary hover:text-tribe-blue transition-colors uppercase" href="#">Crypto</a>
+<a class="text-text-primary hover:text-tribe-blue transition-colors uppercase" href="#">Incubations</a>
+<a class="text-text-primary hover:text-tribe-blue transition-colors uppercase" href="#">Essays</a>
+<a class="text-text-primary hover:text-tribe-blue transition-colors uppercase" href="#">Team</a>
+<a class="text-text-primary hover:text-tribe-blue transition-colors uppercase" href="#">About</a>
+</nav>
+<!-- CTA Button -->
+<a class="bg-tribe-blue text-white px-6 py-3 text-xs font-semibold tracking-wider uppercase flex items-center hover:bg-tribe-blue/90 transition-colors" href="#">
+        Learn More
+        <svg class="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-grow flex flex-col">
+<!-- BEGIN: Hero Section -->
+<section class="flex-grow flex items-center relative z-10 bg-white">
+<div class="max-w-[1400px] mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 py-24 lg:py-32">
+<!-- Main Statement -->
+<div class="lg:col-span-8">
+<h1 class="text-3xl md:text-4xl lg:text-[44px] leading-tight font-medium text-text-primary max-w-3xl">
+            We are a $2.3B AUM venture capital firm focused on harnessing AI and data science to deploy capital with precision — into N-of-1 companies.
+          </h1>
+</div>
+<!-- Info & Secondary CTA -->
+<div class="lg:col-span-4 flex flex-col justify-end lg:pl-12">
+<div class="text-text-secondary text-sm leading-relaxed mb-8">
+<p>Founded June 2018</p>
+<p>Menlo Park, California, USA</p>
+</div>
+<div>
+<a class="inline-flex items-center text-text-primary font-medium text-sm pb-1 border-b border-text-primary hover:text-tribe-blue hover:border-tribe-blue transition-colors group" href="#">
+              Learn more
+              <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Halftone Image Section -->
+<section class="w-full bg-tribe-gray relative overflow-hidden h-[400px] md:h-[500px] lg:h-[600px] mt-auto">
+<img alt="Halftone illustration of hands" class="absolute inset-0 w-full h-full object-cover object-bottom Mix-blend-multiply opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBroE1NwbGTxeC_GZgkJNRWW68mTC_4pIwjEBH_jdDmu-1ogcZOP98UbmiDQ_T_vtN7q5oEm9gqjtzm-J3KcKyRRpmWVUN-GSA3rjFGJRpgyuOJsklwE6uK4uXD_i3mz7Wfn7ajlK-Vm107JJRUqvTtji5n28k1Yr_VOuxILnVG3OuNiKcesdta-jjCakyYYfG_ZXyTaUlTx9N9awf6n_UNYcaz2QZVRVMIl53UdMb8HMrMZQw2XvaP-V305ZsfyRXTY8o">
+</section>
+<!-- END: Halftone Image Section -->
+</main>
+<!-- END: Main Content Area -->
+</body></html>

@@ -1,0 +1,27 @@
+{
+  "name": "contracts",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "export-abi": "ts-node scripts/exportAbi.ts",
+    "deploy:sepolia": "hardhat run scripts/deploySepolia.ts --network ethereumSepolia",
+    "deploy:cc3": "hardhat run scripts/deployCc3.ts --network creditcoinCc3",
+    "deploy:local": "hardhat run scripts/deployLocal.ts --network hardhat"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "@types/node": "^22.10.0",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.29.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@gluwa/asc-contracts": "0.2.1",
+    "@openzeppelin/contracts": "5.6.1"
+  }
+}

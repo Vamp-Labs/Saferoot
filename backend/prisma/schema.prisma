@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PolicyStatus {
+  Draft
+  AwaitingApproval
+  ApprovedOnEthereum
+  AwaitingEvidence
+  Verifying
+  Active
+  Paused
+  Expired
+  Completed
+  Superseded
+}
+
+enum ActionTemplateType {
+  grant
+  risk_cap
+  pause
+}
+
+enum ActionState {
+  Draft
+  Waiting
+  Ready
+  Executed
+  Expired
+  Paused
+  Blocked
+}
+
+enum ActivityType {
+  PolicyDrafted
+  SubmittedToSafe
+  SafeSignatureAdded
+  SafeThresholdReached
+  SourceTransactionExecuted
+  AttestcoinEvidenceAvailable
+  PolicyVerifiedOnCreditcoin
+  ActionSubmitted
+  ActionExecuted
+  ActionBlocked
+  GuardianPauseActivated
+  PolicyExpired
+  NewPolicyVersionActivated
+}
+
+enum ActivityNetwork {
+  ethereum_sepolia
+  creditcoin_cc3
+}
+
+model Policy {
+  id                         String       @id
+  name                       String
+  version                    Int          @default(1)
+  authoritySafeAddress       String
+  authoritySafeChainId       Int
+  destinationChainId         Int
+  executorAddress            String
+  activationTime             DateTime
+  expiryTime                 DateTime
+  status                     PolicyStatus @default(Draft)
+  safeTxHash                 String?
+  ethereumTxHash             String?
+  attestcoinProofRef         String?
+  creditcoinActivationTxHash String?
+
+  supersededById             String?
+  verificationFailureReason  String?
+  verificationFailedAt       DateTime?
+  lastActivationAttemptAt    DateTime?
+  guardianAddress            String?
+  guardianPauseReason        String?
+  guardianPausedAt           DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  actions  Action[]
+  activity ActivityEvent[]
+
+  @@index([status])
+  @@index([safeTxHash])
+}
+
+model Action {
+  id                 String             @id
+  policyId           String
+  templateType       ActionTemplateType
+  label              String
+  targetContract     String
+  functionSelector   String
+  encodedParams      String
+  nativeValue        String
+  earliestExecution  DateTime
+  expiry             DateTime
+  state              ActionState        @default(Draft)
+  executionTxHash    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  policy   Policy          @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  activity ActivityEvent[]
+
+  @@unique([policyId, id])
+  @@index([policyId])
+  @@index([state])
+}
+
+model ActivityEvent {
+  id                String          @id @default(uuid())
+  policyId          String
+  actionId          String?
+  type              ActivityType
+  timestamp         DateTime        @default(now())
+  actor             String
+  network            ActivityNetwork
+  txHash            String?
+  humanReadableMessage String
+  rejectionReason   String?
+  technicalDetails  Json            @default("{}")
+
+  policy Policy  @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  action Action? @relation(fields: [actionId], references: [id], onDelete: SetNull)
+
+  @@index([policyId, timestamp])
+  @@index([actionId])
+  @@index([type])
+}
+
+model Integration {
+  id               String   @id @default(uuid())
+  name             String
+  network          String
+  executorAddress  String
+  verified         Boolean  @default(false)
+  supportedActions Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([network, executorAddress])
+}
+
+model WorkerCursor {
+  key         String   @id
+  blockNumber BigInt
+  updatedAt   DateTime @updatedAt
+}

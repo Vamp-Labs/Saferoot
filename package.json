@@ -1,0 +1,18 @@
+{
+  "name": "safeRoot-policy",
+  "private": true,
+  "workspaces": [
+    "contracts",
+    "backend",
+    "frontend"
+  ],
+  "allowScripts": {
+    "keccak@3.0.4": true,
+    "secp256k1@4.0.5": true,
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "prisma@6.19.3": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true
+  }
+}
