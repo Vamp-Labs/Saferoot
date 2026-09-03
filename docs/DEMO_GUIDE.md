@@ -31,14 +31,15 @@ Tidak ada mock, tidak ada data palsu.
 
 ## 2. Data demo yang sudah siap
 
-**Policy: "Q4 Contributor Grant — Production Demo"** — status **`Completed`**
+Ada **dua policy** yang sudah disiapkan, masing-masing untuk tujuan berbeda.
 
-Link langsung ke halaman detailnya:
+### Policy A — sudah selesai (untuk menunjukkan hasil akhir)
+
+**"Q4 Contributor Grant — Production Demo"** — status **`Completed`**
+
 ```
 https://frontend-production-78b3.up.railway.app/policies/0x46ed58b5e14e07ad6300248a68e9064db0cd67efe971351b7cb2c6194f1e6a0b
 ```
-
-Bukti transaksi nyata di setiap tahap:
 
 | Tahap | Chain | Tx Hash |
 |---|---|---|
@@ -47,7 +48,31 @@ Bukti transaksi nyata di setiap tahap:
 | `activatePolicy` (verifikasi proof) | CC3 | `0xa81e808705a4ea324bdf2b31580f470fcec3bdcfb4e28e2a3de28d0a3218d8db` |
 | `executeAction` (pembayaran) | CC3 | `0x9a91f2ec455b87e14ba61f349b832ac2a231cebd2595ce8a481f0767c7c96083` |
 
-**Hasil akhir:** 2.500 MockUSDC benar-benar terkirim ke `0x415289a6B8Ba252f6B9124fad7eE01AaA90cc769`.
+**Hasil:** 2.500 MockUSDC benar-benar terkirim ke `0x415289a6B8Ba252f6B9124fad7eE01AaA90cc769`.
+
+### Policy B — siap dieksekusi live (untuk demo di depan kamera)
+
+**"Q4 Treasury Policy — Live Demo"** — status **`Active` / Ready to execute**
+
+```
+https://frontend-production-78b3.up.railway.app/policies/0x1421453ee798bf10d2cd06d8dab1caec484ad1734c8bbc5d5f807778ec0c7f41
+```
+
+Sudah lolos verifikasi Attestcoin, punya **2 aksi yang belum dieksekusi**:
+
+| Aksi | Untuk apa |
+|---|---|
+| `Pay 1,200 MockUSDC to Owner3` | Dieksekusi **live di depan kamera** (buktikan alurnya benar-benar jalan) |
+| `Set lending pool max LTV to 65%` | **Sisakan** — pakai ini untuk demo tampering |
+
+Tx Safe-nya: `0xb1a6f48cf97863d0d336141426572e9131ea27ecf8f4703d943936eaabe21a0c` (Sepolia)
+Aktivasi di CC3: `0x9ea582b88762e105ccbb8aa81933cecb1bf200f6bdc6da159ceaedef9e724856`
+
+> ⚠️ **Penting:** demo tampering **harus** memakai aksi yang belum dieksekusi (Policy B).
+> Kalau memakai aksi yang sudah dieksekusi (Policy A), kontrak akan menolak dengan
+> `ActionAlreadyExecuted` — benar secara teknis, tapi tidak membuktikan bahwa kontrak
+> memvalidasi parameter. Dengan Policy B, error yang muncul adalah `CalldataMismatch` /
+> `TargetMismatch` / `FunctionNotAllowed` — itulah bukti yang ingin ditunjukkan.
 
 ---
 
@@ -101,19 +126,37 @@ ke policy yang sudah `Completed`.
 > Jangan menunggu di depan kamera. Itulah alasan kami menyiapkan policy `Completed` di awal.
 
 ### Bagian 4 — Tunjukkan keamanannya (1-1,5 menit) ⭐ pembeda utama
-Buka halaman **`/protected`** dari policy, lalu gunakan panel tampered execution:
 
-1. Coba submit `executeAction` dengan **parameter yang sengaja diubah** (misal ubah jumlah
-   dari 2.500 jadi 25.000)
-2. Tunjukkan transaksi **ditolak oleh kontrak** dengan alasan spesifik (`CalldataMismatch`)
+Gunakan **Policy B** (yang aksinya belum dieksekusi). Buka halaman `/protected`-nya:
+
+```
+https://frontend-production-78b3.up.railway.app/policies/0x1421453ee798bf10d2cd06d8dab1caec484ad1734c8bbc5d5f807778ec0c7f41/protected
+```
+
+Submit `executeAction` dengan parameter yang sengaja diubah, lalu tunjukkan penolakannya.
+Semua kasus di bawah ini **sudah diverifikasi langsung terhadap kontrak yang live**:
+
+| Yang diubah penyerang | Error dari kontrak |
+|---|---|
+| Jumlah: 1.200 → 120.000 USDC | `CalldataMismatch` |
+| Penerima diganti ke alamat lain | `CalldataMismatch` |
+| LTV: 65% → 99% | `CalldataMismatch` |
+| Kontrak target ditukar | `TargetMismatch` |
+| Function selector ditukar (`transfer` → `approve`) | `FunctionNotAllowed` |
+| Menyisipkan native value yang tidak di-approve | `AmountExceedsApproval` |
+| `actionId` yang tidak dikenal | `ActionNotFound` |
+| Mengeksekusi ulang aksi yang sudah jalan (replay) | `ActionAlreadyExecuted` |
+| Orang lain memanggil `guardianPause` | `NotGuardian` |
+| Orang lain memanggil `setAllowedCall` | `OwnableUnauthorizedAccount` |
 
 > Kalimat kuncinya:
-> "Yang ditolak di sini bukan UI — tapi smart contract-nya sendiri. Bahkan kalau penyerang
-> punya proof yang valid dan memanggil kontrak langsung, dia tidak bisa mengubah satu byte
-> pun dari apa yang sudah di-approve oleh Safe."
+> "Yang menolak di sini bukan UI — tapi smart contract-nya sendiri. Bahkan kalau penyerang
+> punya proof Attestcoin yang valid dan memanggil kontrak secara langsung, dia tidak bisa
+> mengubah satu byte pun dari apa yang sudah di-approve oleh Safe. Setiap penyimpangan
+> punya error-nya sendiri."
 
-Kalau sempat, sebutkan bahwa ada **25 kasus adversarial** yang ditangani (spoofed emitter,
-replay, expiry, reentrancy, guardian pause, dll) — semuanya ada di test suite.
+Sebutkan juga bahwa ada **25 kasus adversarial** yang ditangani (spoofed emitter, replay,
+expiry, reentrancy, guardian pause, dll) dan semuanya ada di test suite kontrak.
 
 ### Bagian 5 — Guardian pause (opsional, 30 detik)
 Tunjukkan tombol guardian pause → policy berubah jadi `Paused`, dan aksi yang belum
@@ -176,3 +219,22 @@ attestor. Proof palsu akan gagal diverifikasi, dan kontrak menolak dengan error 
 **"Apakah Safe-nya perlu dimodifikasi?"**
 Tidak. SafeRoot memakai Safe standar tanpa module atau guard tambahan. Approval-nya cuma
 transaksi Safe biasa yang memanggil `PolicyRegistry`.
+
+---
+
+## 7. Status verifikasi (terakhir dijalankan sebelum demo)
+
+Semua sudah diuji langsung terhadap deployment production:
+
+| Suite | Cakupan | Hasil |
+|---|---|---|
+| API + SSR | 15 endpoint backend, 14 halaman frontend | **30/30 lulus** |
+| Browser (Playwright) | 8 route, error JS/console, data live vs fixture | **49/49 lulus** |
+| On-chain adversarial | 10 skenario serangan + kontrol akses + jalur normal | **16/16 lulus** |
+
+Yang dipastikan:
+- Tidak ada halaman yang jatuh ke data contoh ("Showing example data")
+- Tidak ada error JavaScript atau console di halaman mana pun
+- Halaman Execute berjalan dalam mode on-chain sungguhan (bukan "Simulated mode")
+- `sepoliaChainKey` verifier = `1` (chain key Attestcoin asli, bukan `11155111`)
+- Guardian, authority Safe, dan trusted emitter di kontrak cocok dengan deployment
