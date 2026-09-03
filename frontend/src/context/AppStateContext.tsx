@@ -30,14 +30,23 @@ function notifyLocalChange() {
   window.dispatchEvent(new Event(STORAGE_EVENT));
 }
 
+let cachedSafeRaw: string | null = null;
+let cachedSafe: SafeInfo | null = null;
+
 function readSelectedSafe(): SafeInfo | null {
   const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as SafeInfo;
-  } catch {
-    return null;
+  if (raw === cachedSafeRaw) return cachedSafe;
+  cachedSafeRaw = raw;
+  if (!raw) {
+    cachedSafe = null;
+    return cachedSafe;
   }
+  try {
+    cachedSafe = JSON.parse(raw) as SafeInfo;
+  } catch {
+    cachedSafe = null;
+  }
+  return cachedSafe;
 }
 
 function readDraftPolicyJson(): string | null {
