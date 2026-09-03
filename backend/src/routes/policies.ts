@@ -3,7 +3,7 @@ import { prisma } from "../prisma";
 import { generateBytes32Id } from "../lib/ids";
 import { recordActivity } from "../lib/activityLog";
 import { activityMessage } from "../domain/activityMessages";
-import { serializePolicy, serializePolicyDetail } from "../domain/serialize";
+import { serializePolicySummary, serializePolicyDetail } from "../domain/serialize";
 import { groupPolicies } from "../domain/policyGrouping";
 import { BadRequestError, ConflictError, NotFoundError } from "../lib/httpErrors";
 import { createPolicySchema, linkSafeTxSchema, updatePolicySchema } from "../lib/schemas";
@@ -161,10 +161,10 @@ export async function policiesRoutes(app: FastifyInstance): Promise<void> {
     });
     const groups = groupPolicies(policies);
     return {
-      needsAttention: groups.needsAttention.map((p) => serializePolicy(p, p.actions)),
-      beingVerified: groups.beingVerified.map((p) => serializePolicy(p, p.actions)),
-      ready: groups.ready.map((p) => serializePolicy(p, p.actions)),
-      history: groups.history.map((p) => serializePolicy(p, p.actions)),
+      needsAttention: groups.needsAttention.map((p) => serializePolicySummary(p, p.actions)),
+      beingVerified: groups.beingVerified.map((p) => serializePolicySummary(p, p.actions)),
+      ready: groups.ready.map((p) => serializePolicySummary(p, p.actions)),
+      history: groups.history.map((p) => serializePolicySummary(p, p.actions)),
     };
   });
 

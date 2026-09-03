@@ -49,6 +49,13 @@ export function serializePolicy(policy: Policy, actions: Action[] = []) {
   };
 }
 
+export function serializePolicySummary(policy: Policy, actions: Action[]) {
+  return {
+    ...serializePolicy(policy, actions),
+    actions: actions.map(serializeAction),
+  };
+}
+
 export function serializePolicyDetail(policy: Policy, actions: Action[], activity: ActivityEvent[]) {
   return {
     ...serializePolicy(policy, actions),
