@@ -230,6 +230,7 @@ Semua sudah diuji langsung terhadap deployment production:
 |---|---|---|
 | API + SSR | 15 endpoint backend, 14 halaman frontend | **30/30 lulus** |
 | Browser (Playwright) | 8 route, error JS/console, data live vs fixture | **49/49 lulus** |
+| Alur Safe terpilih (regresi) | Select Safe → Continue → semua halaman + navigasi | **20/20 lulus** |
 | On-chain adversarial | 10 skenario serangan + kontrol akses + jalur normal | **16/16 lulus** |
 
 Yang dipastikan:
@@ -238,3 +239,16 @@ Yang dipastikan:
 - Halaman Execute berjalan dalam mode on-chain sungguhan (bukan "Simulated mode")
 - `sepoliaChainKey` verifier = `1` (chain key Attestcoin asli, bukan `11155111`)
 - Guardian, authority Safe, dan trusted emitter di kontrak cocok dengan deployment
+- Alur "Continue with this Safe" berjalan tanpa crash, konteks Safe bertahan setelah reload
+
+### Bug yang ditemukan & diperbaiki saat pengujian
+
+| Bug | Dampak | Status |
+|---|---|---|
+| `/activity` & `/integrations` dibungkus objek, frontend mengharapkan array | Halaman Activity error 500 | Diperbaiki |
+| Endpoint daftar `/policies` tidak menyertakan `actions` | Halaman Policies error 500 begitu ada data | Diperbaiki |
+| `readSelectedSafe` mengembalikan objek baru tiap panggilan | **Semua halaman crash setelah "Continue with this Safe"** (React #185) | Diperbaiki |
+
+> Bug ketiga adalah yang paling berbahaya untuk demo: ia hanya muncul setelah user memilih
+> Safe — persis langkah kedua dari alur demo. Semua pengujian sebelumnya lolos karena
+> membuka URL secara langsung tanpa pernah menekan tombol tersebut.
