@@ -56,34 +56,8 @@ moves **proof that a Safe approval happened**, verified cryptographically:
 ---
 
 ## Architecture
+<img width="1448" height="1086" alt="image" src="https://github.com/user-attachments/assets/958ba48d-7208-45a1-b161-66a7aa99a918" />
 
-```
- Ethereum Sepolia                      Creditcoin CC3
- ┌──────────────────┐                  ┌─────────────────────────┐
- │  Safe (2-of-3)    │                  │  SafeRootPolicyExecutor  │
- │  multisig          │                 │  - activatePolicy()       │
- │                    │  registerPolicy │  - executeAction()         │
- │                    ├────────────────►│  - guardianPause()          │
- └────────┬───────────┘  (Safe tx)      └───────────▲──────────────┘
-          │                                          │ verifies proof via
-          │ Attestcoin attests the tx                │ 0xFD2 Native Query
-          ▼                                          │ Verifier precompile
- ┌────────────────────┐   inclusion proof   ┌────────┴──────────────┐
- │ Attestcoin / USC     │───────────────────►│ AttestcoinVerifierAdapter │
- │ decentralized oracle │                     └───────────────────────┘
- └──────────────────────┘
-
- Off-chain:
- ┌──────────────┐   watches Safe tx   ┌────────────────────┐   requests proof   ┌────────────┐
- │ Fastify backend│◄───────────────────┤ Safe Transaction Svc │                    │ Attestcoin  │
- │ (worker + API)  │────────────────────────────────────────────────────────────►│ USC SDK      │
- └───────┬─────────┘                                                              └────────────┘
-         │ serves REST API
-         ▼
- ┌──────────────┐
- │ Next.js frontend│  (Railway)
- └──────────────┘
-```
 
 **Contracts** (`contracts/`)
 - `PolicyRegistry.sol` (Sepolia) — the only thing a Safe ever calls. Records an
