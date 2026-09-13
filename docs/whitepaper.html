@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SafeRoot Policy — Whitepaper</title>
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a;
+    background: #ffffff;
+  }
+  .slide {
+    width: 297mm;
+    height: 210mm;
+    padding: 16mm 18mm;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  .eyebrow {
+    font-size: 10.5pt;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #2b6cff;
+    margin: 0 0 6mm 0;
+  }
+  h1 {
+    font-size: 28pt;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 6mm 0;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: 20pt;
+    font-weight: 700;
+    margin: 0 0 8mm 0;
+    letter-spacing: -0.01em;
+  }
+  p { font-size: 12pt; line-height: 1.55; margin: 0 0 4mm 0; }
+  .lede { font-size: 14pt; line-height: 1.5; color: #333; max-width: 210mm; }
+
+  .footer {
+    position: absolute;
+    bottom: 10mm;
+    left: 18mm;
+    right: 18mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 0.4pt solid #ddd;
+    padding-top: 3mm;
+  }
+
+  /* Cover */
+  .cover {
+    background: #0f1220;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .cover .tag {
+    font-size: 11pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #6ea8ff;
+    margin-bottom: 8mm;
+  }
+  .cover h1 {
+    font-size: 44pt;
+    color: #fff;
+    margin-bottom: 6mm;
+  }
+  .cover .sub {
+    font-size: 16pt;
+    color: #c7cbe0;
+    max-width: 200mm;
+    line-height: 1.5;
+    margin-bottom: 14mm;
+  }
+  .cover .links {
+    font-size: 10.5pt;
+    color: #9aa3c7;
+    line-height: 2;
+  }
+  .cover .links b { color: #fff; }
+
+  /* Grid layout helpers */
+  .cols-2 { display: flex; gap: 12mm; }
+  .cols-2 > div { flex: 1; }
+  .box {
+    border: 0.6pt solid #d8d8d8;
+    border-radius: 3mm;
+    padding: 6mm 7mm;
+    background: #fafafa;
+  }
+  .box h3 {
+    font-size: 12pt;
+    margin: 0 0 3mm 0;
+    color: #2b6cff;
+  }
+  .box p { font-size: 10.5pt; }
+  .danger-box { border-color: #f2c2c2; background: #fdf3f3; }
+  .danger-box h3 { color: #c0392b; }
+
+  ul.tight { margin: 0; padding-left: 5mm; font-size: 11pt; line-height: 1.6; }
+  ul.tight li { margin-bottom: 2mm; }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin: 10mm 0;
+  }
+  .flow-step {
+    flex: 1;
+    border: 0.8pt solid #2b6cff;
+    border-radius: 3mm;
+    padding: 6mm;
+    background: #eef4ff;
+    position: relative;
+  }
+  .flow-step .num {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #2b6cff;
+    margin-bottom: 2mm;
+  }
+  .flow-step h4 { font-size: 11.5pt; margin: 0 0 2mm 0; }
+  .flow-step p { font-size: 9.5pt; margin: 0; color: #444; }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12mm;
+    font-size: 16pt;
+    color: #999;
+  }
+
+  /* Architecture diagram */
+  .arch {
+    display: flex;
+    gap: 8mm;
+    margin-top: 8mm;
+  }
+  .chain-col {
+    flex: 1;
+    border: 0.8pt solid #ccc;
+    border-radius: 3mm;
+    padding: 6mm;
+  }
+  .chain-col.sepolia { background: #eef4ff; border-color: #b9cdf9; }
+  .chain-col.cc3 { background: #eefbf3; border-color: #b6e6c9; }
+  .chain-col h3 { font-size: 11pt; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 4mm 0; }
+  .node {
+    background: #fff;
+    border: 0.6pt solid #ccc;
+    border-radius: 2mm;
+    padding: 3mm 4mm;
+    margin-bottom: 3mm;
+    font-size: 9.5pt;
+  }
+  .node b { display: block; font-size: 10.5pt; margin-bottom: 1mm; }
+  .down-arrow { text-align: center; font-size: 13pt; color: #999; margin: 1mm 0; }
+
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+  }
+  table.data th {
+    text-align: left;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+    border-bottom: 0.8pt solid #ccc;
+    padding: 2mm 3mm;
+  }
+  table.data td {
+    padding: 2.2mm 3mm;
+    border-bottom: 0.4pt solid #eee;
+    font-family: "Courier New", monospace;
+    font-size: 8.5pt;
+  }
+  table.data td.label { font-family: inherit; font-size: 9.5pt; }
+
+  .badge {
+    display: inline-block;
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.8mm 2.5mm;
+    border-radius: 1.5mm;
+    background: #fdecec;
+    color: #c0392b;
+  }
+
+  .stat-row { display: flex; gap: 8mm; margin: 8mm 0; }
+  .stat {
+    flex: 1;
+    border: 0.6pt solid #ddd;
+    border-radius: 3mm;
+    padding: 6mm;
+    text-align: center;
+  }
+  .stat .num { font-size: 24pt; font-weight: 700; color: #2b6cff; }
+  .stat .lbl { font-size: 9.5pt; color: #666; margin-top: 2mm; }
+
+  .quote {
+    font-size: 15pt;
+    line-height: 1.6;
+    font-style: italic;
+    color: #222;
+    border-left: 3pt solid #2b6cff;
+    padding-left: 8mm;
+    margin: 8mm 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide cover">
+  <div class="tag">BUIDL CTC 2026 Fall — Creditcoin Hackathon Submission</div>
+  <h1>SafeRoot Policy</h1>
+  <div class="sub">One Safe approval on Ethereum. Trustless verification via Creditcoin's Attestcoin oracle.
+  Execution that refuses anything that wasn't exactly what was approved. No bridge, no new signers.</div>
+  <div class="links">
+    Live app: <b>frontend-production-78b3.up.railway.app</b><br/>
+    Repository: <b>github.com/Vamp-Labs/Saferoot</b><br/>
+    Demo video: <b>youtu.be/6N_fVw4CcgM</b>
+  </div>
+</section>
+
+<!-- SLIDE 2: PROBLEM -->
+<section class="slide">
+  <div class="eyebrow">01 — The Problem</div>
+  <h2>Cross-chain treasury authority means trusting something new</h2>
+  <p class="lede">Safe multisig is the standard for DAO and protocol treasuries — but its authority stops
+  at the chain it lives on. The moment a team wants an approved action to affect another chain, every
+  common answer introduces a new party the treasury has to trust.</p>
+
+  <div class="cols-2" style="margin-top:10mm;">
+    <div class="box danger-box">
+      <h3>Bridge the assets</h3>
+      <p>A bridge contract or its operators become a single point of failure holding the funds.
+      Bridges are, by dollar value, the most exploited category of smart contract in crypto history.</p>
+    </div>
+    <div class="box danger-box">
+      <h3>Second signer set</h3>
+      <p>Deploying a separate multisig on the destination chain doubles key-management surface and
+      governance overhead — now two committees must stay honest and in sync.</p>
+    </div>
+    <div class="box danger-box">
+      <h3>Centralized relayer</h3>
+      <p>A single company or server sits between a governance decision and the funds moving —
+      exactly the kind of intermediary decentralized treasuries exist to avoid.</p>
+    </div>
+  </div>
+
+  <div class="quote">None of these actually need to exist. A DAO doesn't need to move assets cross-chain
+  to act cross-chain — it needs the destination chain to be convinced, cryptographically, that an
+  approval genuinely happened. That's a proof problem, not a bridging problem.</div>
+  <div class="footer"><span>SafeRoot Policy</span><span>2 / 10</span></div>
+</section>
+
+<!-- SLIDE 3: SOLUTION FLOW -->
+<section class="slide">
+  <div class="eyebrow">02 — The Solution</div>
+  <h2>Approve once. Prove it. Verify it natively. Enforce it exactly.</h2>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="num">STEP 1</div>
+      <h4>Approve on Ethereum</h4>
+      <p>A Safe calls <code>PolicyRegistry.registerPolicy()</code> with an explicit, bounded policy:
+      target contract, function, exact calldata, value cap, time window, expiry. An ordinary Safe tx —
+      no module, no new signer installed.</p>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">STEP 2</div>
+      <h4>Attestcoin proves it</h4>
+      <p>Creditcoin's decentralized oracle builds attestor consensus over Ethereum's history and
+      produces a cryptographic inclusion proof for that exact transaction.</p>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">STEP 3</div>
+      <h4>Verify natively</h4>
+      <p><code>SafeRootPolicyExecutor</code> hands the proof to Creditcoin's native
+      <code>0xFD2</code> Query Verifier precompile — a chain-level primitive, not a third-party
+      oracle contract.</p>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="num">STEP 4</div>
+      <h4>Execute under constraints</h4>
+      <p>Anyone can call <code>executeAction()</code> — the contract re-derives and checks every
+      parameter against what the Safe approved. Any deviation reverts with a named error.</p>
+    </div>
+  </div>
+  <p class="lede">The result: a DAO's Ethereum Safe becomes the source of authority for actions on
+  Creditcoin, with zero new trusted parties in between.</p>
+  <div class="footer"><span>SafeRoot Policy</span><span>3 / 10</span></div>
+</section>
+
+<!-- SLIDE 4: ARCHITECTURE -->
+<section class="slide">
+  <div class="eyebrow">03 — Architecture</div>
+  <h2>Two chains, one source of authority</h2>
+  <div class="arch">
+    <div class="chain-col sepolia">
+      <h3>Ethereum Sepolia</h3>
+      <div class="node"><b>Safe (2-of-3 multisig)</b>Authority Safe — the only signer set that exists</div>
+      <div class="down-arrow">↓ registerPolicy()</div>
+      <div class="node"><b>PolicyRegistry.sol</b>Records the approved policy hash + action list as an event; enforces monotonically increasing versions</div>
+    </div>
+    <div class="chain-col cc3">
+      <h3>Creditcoin CC3</h3>
+      <div class="node"><b>AttestcoinVerifierAdapter.sol</b>Verifies the USC inclusion proof via the native 0xFD2 Query Verifier precompile</div>
+      <div class="down-arrow">↓ activatePolicy()</div>
+      <div class="node"><b>SafeRootPolicyExecutor.sol</b>Enforces target, selector, calldata, value, timing, replay protection, guardian pause</div>
+      <div class="down-arrow">↓ executeAction()</div>
+      <div class="node"><b>MockUSDC / LendingPoolMock</b>The real integration contracts a policy acts on</div>
+    </div>
+  </div>
+  <p style="margin-top:8mm;">Off-chain: a Fastify backend watches the Safe Transaction Service for
+  signature progress, requests Attestcoin proofs via <code>@gluwa/usc-sdk</code>, and submits the
+  on-chain transactions. A Next.js frontend renders the full lifecycle and a live "attempt a tampered
+  execution" control.</p>
+  <div class="footer"><span>SafeRoot Policy</span><span>4 / 10</span></div>
+</section>
+
+<!-- SLIDE 5: WHY CREDITCOIN -->
+<section class="slide">
+  <div class="eyebrow">04 — Why This Fits Creditcoin</div>
+  <h2>A real integration of Attestcoin, not a mock of the interface</h2>
+  <ul class="tight">
+    <li><b>Attestcoin / USC</b> is Creditcoin's answer to trustless cross-chain data — SafeRoot integrates
+    it directly (<code>@gluwa/usc-sdk</code> on the backend, <code>@gluwa/asc-contracts</code> proof
+    types on-chain), not a stand-in interface.</li>
+    <li>The <b>native 0xFD2 Query Verifier precompile</b> is called directly from
+    <code>AttestcoinVerifierAdapter.sol</code> — proof verification happens at the chain level, exactly
+    the trust-minimization story Creditcoin's stack is built to enable.</li>
+    <li>Building this surfaced a real integration trap worth documenting: Attestcoin's internal
+    <b>chainKey</b> for a source chain is <b>not</b> the same as its EVM <b>chainId</b>. Sepolia's EVM
+    chainId is <code>11155111</code>; its Attestcoin chainKey is <code>1</code>.</li>
+  </ul>
+  <div class="quote">We hit this as a real production bug: a misconfigured adapter caused every proof
+  verification to revert with <code>UnsupportedSourceChain</code> until we root-caused it by decoding
+  the raw revert data byte-by-byte. It's documented here because it's exactly the trap a team using
+  Attestcoin for the first time will hit.</div>
+  <div class="footer"><span>SafeRoot Policy</span><span>5 / 10</span></div>
+</section>
+
+<!-- SLIDE 6: SECURITY MODEL -->
+<section class="slide">
+  <div class="eyebrow">05 — Security Model</div>
+  <h2>Every guard is enforced on-chain, independent of the caller</h2>
+  <table class="data">
+    <tr><th>Guard</th><th>Enforced by revert</th></tr>
+    <tr><td class="label">Only the registered Safe's policy is honored</td><td>SafeMismatch</td></tr>
+    <tr><td class="label">Only the last-approved version is valid</td><td>StalePolicyVersion</td></tr>
+    <tr><td class="label">Policy must not have expired</td><td>PolicyExpired / PolicyAlreadyExpired</td></tr>
+    <tr><td class="label">An Attestcoin proof can't be reused</td><td>ProofAlreadyUsed</td></tr>
+    <tr><td class="label">Only the trusted Sepolia emitter is accepted</td><td>EmitterNotApproved</td></tr>
+    <tr><td class="label">Target contract must match exactly</td><td>TargetMismatch</td></tr>
+    <tr><td class="label">Function selector must be pre-allowed</td><td>FunctionNotAllowed</td></tr>
+    <tr><td class="label">Calldata must match exactly</td><td>CalldataMismatch</td></tr>
+    <tr><td class="label">Native value can't exceed what was approved</td><td>AmountExceedsApproval</td></tr>
+    <tr><td class="label">An action can't execute before its window or after expiry</td><td>NotYetEligible / ActionExpired</td></tr>
+    <tr><td class="label">An action can't execute twice</td><td>ActionAlreadyExecuted</td></tr>
+    <tr><td class="label">A paused policy blocks execution</td><td>ExecutorPaused</td></tr>
+    <tr><td class="label">Guardian pause is guardian-only</td><td>NotGuardian</td></tr>
+    <tr><td class="label">Reentrancy is blocked</td><td>OpenZeppelin ReentrancyGuard</td></tr>
+  </table>
+  <div class="footer"><span>SafeRoot Policy</span><span>6 / 10</span></div>
+</section>
+
+<!-- SLIDE 7: EVIDENCE -->
+<section class="slide">
+  <div class="eyebrow">06 — What's Actually Live</div>
+  <h2>Verified, not claimed</h2>
+  <div class="stat-row">
+    <div class="stat"><div class="num">2</div><div class="lbl">real testnets deployed to<br/>(Ethereum Sepolia + Creditcoin CC3)</div></div>
+    <div class="stat"><div class="num">38</div><div class="lbl">Hardhat contract tests<br/>(executor, registry, verifier adapter)</div></div>
+    <div class="stat"><div class="num">115 / 115</div><div class="lbl">end-to-end checks passing<br/>against live production</div></div>
+    <div class="stat"><div class="num">10</div><div class="lbl">adversarial tamper scenarios<br/>verified against the live contract</div></div>
+  </div>
+  <p class="lede" style="margin-top:6mm;">One production policy has genuinely completed its full lifecycle
+  — Safe approval, Attestcoin attestation, on-chain verification, and a real 2,500 MockUSDC payout —
+  each step backed by a confirmed transaction hash on both chains.</p>
+  <p>Three real bugs were found and fixed during end-to-end testing (response-shape mismatches causing
+  500s, and a React infinite-render-loop crash after selecting a Safe) — documented with root cause and
+  fix in <code>docs/DEMO_GUIDE.md</code>, rather than hidden.</p>
+  <div class="footer"><span>SafeRoot Policy</span><span>7 / 10</span></div>
+</section>
+
+<!-- SLIDE 8: TECH STACK -->
+<section class="slide">
+  <div class="eyebrow">07 — Tech Stack</div>
+  <h2>Built on production-grade tooling, end to end</h2>
+  <table class="data" style="font-size:10.5pt;">
+    <tr><th>Layer</th><th style="font-family:inherit;">Stack</th></tr>
+    <tr><td class="label">Contracts</td><td style="font-family:inherit;">Solidity 0.8.28, Hardhat, OpenZeppelin 5, @gluwa/asc-contracts</td></tr>
+    <tr><td class="label">Backend</td><td style="font-family:inherit;">Fastify 5, Prisma + Postgres, ethers v6, @gluwa/usc-sdk, pino</td></tr>
+    <tr><td class="label">Frontend</td><td style="font-family:inherit;">Next.js 16, React 19, wagmi 3 / viem 2, @safe-global/protocol-kit + api-kit, TanStack Query, Tailwind 4</td></tr>
+    <tr><td class="label">Infra</td><td style="font-family:inherit;">Railway (Postgres + backend + frontend services), npm workspaces monorepo</td></tr>
+  </table>
+  <div class="cols-2" style="margin-top:10mm;">
+    <div class="box">
+      <h3>Deployed contracts</h3>
+      <p style="font-family:'Courier New',monospace; font-size:8.5pt;">
+      PolicyRegistry (Sepolia): 0xEE1920869bfCB8b24C1b5AAE45927E7ad12f07F0<br/>
+      Authority Safe (Sepolia): 0xf4b6a941B0bB4699cba45970cBf7c476ccE49dDd<br/>
+      SafeRootPolicyExecutor (CC3): 0x57dE3c48b747A812fD643900568EA9FbCE6dF7cB<br/>
+      AttestcoinVerifierAdapter (CC3): 0x8964F00624b3aAF3f74d51db2016571dC398374d
+      </p>
+    </div>
+    <div class="box">
+      <h3>Live services</h3>
+      <p style="font-size:10pt;">Frontend: frontend-production-78b3.up.railway.app<br/>
+      Backend API: backend-production-1ff6f.up.railway.app<br/>
+      Repository: github.com/Vamp-Labs/Saferoot</p>
+    </div>
+  </div>
+  <div class="footer"><span>SafeRoot Policy</span><span>8 / 10</span></div>
+</section>
+
+<!-- SLIDE 9: ROADMAP -->
+<section class="slide">
+  <div class="eyebrow">08 — What We'd Build Next</div>
+  <h2>Beyond the hackathon</h2>
+  <ul class="tight" style="font-size:13pt; line-height:2;">
+    <li><b>Guardian rotation & multi-guardian quorum</b> — today a single guardian address can pause;
+    a natural extension is a small guardian committee with its own threshold.</li>
+    <li><b>Policy templates as a public registry</b> — let any Creditcoin protocol publish an
+    "integration" (target + allowed selectors) so more DAOs can point a policy at it without custom
+    backend wiring.</li>
+    <li><b>Batch policies</b> — one Safe approval authorizing a sequence of dependent actions across
+    multiple Creditcoin contracts, not just parallel independent actions.</li>
+    <li><b>Mainnet hardening</b> — formal audit of SafeRootPolicyExecutor's replay/expiry/reentrancy
+    boundaries before any real-value mainnet deployment.</li>
+  </ul>
+  <div class="footer"><span>SafeRoot Policy</span><span>9 / 10</span></div>
+</section>
+
+<!-- SLIDE 10: CLOSE -->
+<section class="slide cover">
+  <div class="tag">Thank you</div>
+  <h1>SafeRoot Policy</h1>
+  <div class="sub">One approval. A trustless proof. A contract that only does exactly what was
+  signed for.</div>
+  <div class="links">
+    Live app: <b>frontend-production-78b3.up.railway.app</b><br/>
+    Repository: <b>github.com/Vamp-Labs/Saferoot</b><br/>
+    Demo video: <b>youtu.be/6N_fVw4CcgM</b><br/>
+    Full docs: <b>docs/README.md · docs/HACKATHON_SUBMISSION.md · docs/DEMO_GUIDE.md</b>
+  </div>
+</section>
+
+</body>
+</html>

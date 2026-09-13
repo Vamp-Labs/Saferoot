@@ -12,6 +12,7 @@ import { WalletButton } from "./WalletButton";
 const navLinks = [
   { href: "/policies", label: "Policies" },
   { href: "/activity", label: "Activity" },
+  { href: "/docs", label: "Docs" },
 ];
 
 function networkForPath(pathname: string): NetworkId | null {

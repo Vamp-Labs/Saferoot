@@ -9,6 +9,8 @@ on **Creditcoin CC3** by a contract that rejects anything that deviates from wha
 signed.
 
 🔴 **Live demo:** https://frontend-production-78b3.up.railway.app
+▶️ **Demo video:** https://youtu.be/6N_fVw4CcgM
+📄 **Whitepaper (PDF, viewable in-app):** https://frontend-production-78b3.up.railway.app/docs
 📄 **Hackathon submission writeup:** [`docs/HACKATHON_SUBMISSION.md`](docs/HACKATHON_SUBMISSION.md)
 🎬 **Demo recording script:** [`docs/DEMO_SCRIPT_3MIN.md`](docs/DEMO_SCRIPT_3MIN.md)
 📖 **Full demo/reference guide:** [`docs/DEMO_GUIDE.md`](docs/DEMO_GUIDE.md)

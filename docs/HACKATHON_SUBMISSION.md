@@ -3,6 +3,8 @@
 **Event:** BUIDL CTC 2026 Fall (Creditcoin)
 **Repo:** https://github.com/Vamp-Labs/Saferoot
 **Live app:** https://frontend-production-78b3.up.railway.app
+**Demo video:** https://youtu.be/6N_fVw4CcgM
+**Whitepaper (PDF):** https://frontend-production-78b3.up.railway.app/docs
 **Demo video script:** [`DEMO_SCRIPT_3MIN.md`](DEMO_SCRIPT_3MIN.md) · **Full walkthrough:** [`DEMO_GUIDE.md`](DEMO_GUIDE.md)
 
 ---
